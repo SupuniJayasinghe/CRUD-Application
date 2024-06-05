@@ -64,7 +64,15 @@ const Users = () => {
             });
     }
 
-    
+    const deleteUser = (data) => {   
+            axios.post('http://localhost:3001/api/deleteuser', data)
+            .then(() => {
+                getUsers();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
     return(
         <Box
@@ -88,6 +96,7 @@ const Users = () => {
                 
                 }}
                 rows={users} 
+                deleteUser={data => window.confirm('Are you sure ?') && deleteUser(data)}
             />
         </Box>
         
