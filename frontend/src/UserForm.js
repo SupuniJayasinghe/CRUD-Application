@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Grid, Input, Typography } from '@mui/material';
 import { useState } from 'react';
 
-const UserForm = ({addUser, submitted}) => {
+const UserForm = ({addUser, updateUser, submitted, data, isEdit}) => {
     const [id, setId] = useState(0);
     const [name, setName] = useState('');
 
@@ -10,6 +10,13 @@ const UserForm = ({addUser, submitted}) => {
         setId(0);
         setName('');
     },[submitted]);
+
+    useEffect(() => {
+        if (data?.id && data.id !== 0) {
+            setId(data.id);
+            setName(data.name); 
+        }
+    },[data]); //when the data prop is changing
 
     return (
         <Grid
@@ -83,8 +90,8 @@ const UserForm = ({addUser, submitted}) => {
                     },
                     
                 }}
-                onClick={() => addUser({id,name})}>
-                Add
+                onClick={() => isEdit? updateUser({id,name}): addUser({id,name})}>
+                {isEdit ? 'Update' : 'Add'}
             </Button>
         </Grid>
     );

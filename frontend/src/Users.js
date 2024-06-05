@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
-    const [submitted, setSubmitted] = useState(false);  
+    const [submitted, setSubmitted] = useState(false); 
+    const [isEdit, setIsEdit] = useState(false); 
+    const [selectedUser, setSelectedUser] = useState({});
 
     //lifecycle method
     useEffect(() => {
@@ -36,11 +38,33 @@ const Users = () => {
             .then(() => {
                 getUsers();
                 setSubmitted(false);
+                isEdit(false); 
             })
             .catch(error => {
                 console.log(error);
             });
     }
+
+    const updateUser = (data) => {
+        setSubmitted(true);
+
+        const payload = {
+            id:data.id,
+            name:data.name,
+        }
+
+        axios.put('http://localhost:3001/api/updateuser', payload)
+            .then(() => {
+                getUsers();
+                setSubmitted(false);
+                isEdit(false);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    
 
     return(
         <Box
@@ -52,9 +76,19 @@ const Users = () => {
         >
             <UserForm 
                 addUser = {addUser}
+                updateUser = {updateUser}
                 submitted = {submitted}
+                data = {selectedUser}
+                isEdit = {isEdit}   
             />
-            <UsersTable rows={users} />
+            <UsersTable 
+                selectedUser = {data => {
+                    setSelectedUser(data);
+                    setIsEdit(true);
+                
+                }}
+                rows={users} 
+            />
         </Box>
         
     );
