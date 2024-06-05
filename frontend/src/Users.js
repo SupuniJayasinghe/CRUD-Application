@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
+    const [submitted, setSubmitted] = useState(false);  
 
     //lifecycle method
     useEffect(() => {
@@ -23,7 +24,23 @@ const Users = () => {
             });
     }
 
-    
+    const addUser = (data) => {
+        setSubmitted(true);
+
+        const payload = {
+            id:data.id,
+            name:data.name,
+        }
+
+        axios.post('http://localhost:3001/api/createuser', payload)
+            .then(() => {
+                getUsers();
+                setSubmitted(false);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
     return(
         <Box
@@ -33,7 +50,10 @@ const Users = () => {
                 marginTop: '100px',
             }}
         >
-            <UserForm />
+            <UserForm 
+                addUser = {addUser}
+                submitted = {submitted}
+            />
             <UsersTable rows={users} />
         </Box>
         
